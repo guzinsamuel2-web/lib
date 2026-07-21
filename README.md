@@ -838,7 +838,7 @@ Modules["Window"] = function()
             SliceCenter = Rect.new(49, 49, 450, 450)
         })
 
-        self._mainFrame = Create.new("CanvasGroup", {
+        self._mainFrame = Create.new("Frame", {
             Name = "MainFrame",
             Parent = self._screenGui,
             AnchorPoint = Vector2.new(0.5, 0.5),
@@ -846,6 +846,7 @@ Modules["Window"] = function()
             Size = windowSize,
             BackgroundColor3 = Theme:GetColor("Background"),
             BorderSizePixel = 0,
+            ClipDescendants = true,
         }, {
             Create.new("UICorner", {
                 CornerRadius = UDim.new(0, Config:Get("BorderRadius"))
@@ -863,6 +864,17 @@ Modules["Window"] = function()
             BackgroundColor3 = Theme:GetColor("Topbar"),
             BorderSizePixel = 0,
         }, {
+            Create.new("UICorner", {
+                CornerRadius = UDim.new(0, Config:Get("BorderRadius"))
+            }),
+            Create.new("Frame", {
+                Name = "BottomFiller",
+                Size = UDim2.new(1, 0, 0, 10),
+                Position = UDim2.new(0, 0, 1, -10),
+                BackgroundColor3 = Theme:GetColor("Topbar"),
+                BorderSizePixel = 0,
+                ZIndex = 0
+            }),
             Create.new("Frame", {
                 Name = "BottomLine",
                 Size = UDim2.new(1, 0, 0, 1),
@@ -987,27 +999,46 @@ Modules["Window"] = function()
             })
         end
 
-        self._tabContainer = Create.new("Frame", {
+        self._tabBar = Create.new("Frame", {
+            Name = "TabBar",
+            Parent = self._mainFrame,
+            Size = UDim2.new(1, 0, 0, 36),
+            Position = UDim2.new(0, 0, 0, Config:Get("TopBarHeight")),
+            BackgroundColor3 = Theme:GetColor("SecondaryBackground"),
+            BorderSizePixel = 0
+        }, {
+            Create.new("Frame", {
+                Name = "BottomLine",
+                Size = UDim2.new(1, 0, 0, 1),
+                Position = UDim2.new(0, 0, 1, -1),
+                BackgroundColor3 = Theme:GetColor("Border"),
+                BorderSizePixel = 0
+            })
+        })
+
+        self._tabContainer = Create.new("ScrollingFrame", {
             Name = "TabContainer",
-            Parent = self._topBar,
-            Size = UDim2.new(0.5, 0, 1, 0),
-            Position = UDim2.new(0.5, 0, 0, 0),
+            Parent = self._tabBar,
+            Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
+            ScrollBarThickness = 0,
+            AutomaticCanvasSize = Enum.AutomaticSize.X,
+            CanvasSize = UDim2.new(0, 0, 0, 0)
         }, {
             Create.new("UIListLayout", {
                 FillDirection = Enum.FillDirection.Horizontal,
-                HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                HorizontalAlignment = Enum.HorizontalAlignment.Left,
                 SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 10)
+                Padding = UDim.new(0, 15)
             }),
-            Create.new("UIPadding", { PaddingRight = UDim.new(0, 40) })
+            Create.new("UIPadding", { PaddingLeft = UDim.new(0, Config:Get("Padding")), PaddingRight = UDim.new(0, Config:Get("Padding")) })
         })
 
         self._bodyFrame = Create.new("Frame", {
             Name = "Body",
             Parent = self._mainFrame,
-            Size = UDim2.new(1, 0, 1, -Config:Get("TopBarHeight")),
-            Position = UDim2.new(0, 0, 0, Config:Get("TopBarHeight")),
+            Size = UDim2.new(1, 0, 1, -(Config:Get("TopBarHeight") + 36)),
+            Position = UDim2.new(0, 0, 0, Config:Get("TopBarHeight") + 36),
             BackgroundTransparency = 1
         })
         
@@ -1073,7 +1104,10 @@ Modules["Window"] = function()
             self._mainFrame.BackgroundColor3 = Theme:GetColor("Background")
             self._mainFrame.UIStroke.Color = Theme:GetColor("Border")
             self._topBar.BackgroundColor3 = Theme:GetColor("Topbar")
+            self._topBar.BottomFiller.BackgroundColor3 = Theme:GetColor("Topbar")
             self._topBar.BottomLine.BackgroundColor3 = Theme:GetColor("Border")
+            self._tabBar.BackgroundColor3 = Theme:GetColor("SecondaryBackground")
+            self._tabBar.BottomLine.BackgroundColor3 = Theme:GetColor("Border")
             self._titleLabel.TextColor3 = Theme:GetColor("Text")
             self._closeButton.ImageColor3 = Theme:GetColor("SubText")
             
