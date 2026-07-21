@@ -846,7 +846,7 @@ Modules["Window"] = function()
             Size = windowSize,
             BackgroundColor3 = Theme:GetColor("Background"),
             BorderSizePixel = 0,
-            ClipDescendants = true,
+            ClipsDescendants = true,
         }, {
             Create.new("UICorner", {
                 CornerRadius = UDim.new(0, Config:Get("BorderRadius"))
