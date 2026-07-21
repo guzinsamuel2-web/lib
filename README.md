@@ -807,12 +807,10 @@ Modules["Window"] = function()
         self._shadowFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local windowSize = Config:Get("WindowSize")
-        self._mainFrame.GroupTransparency = 1
         
         local tweenInfo = Tween:GetInfo(Config:Get("AnimationSpeed"), Config:Get("AnimationEasing"), Config:Get("AnimationDirection"))
         Tween:Run(self._mainFrame, tweenInfo, {
-            Size = windowSize,
-            GroupTransparency = 0
+            Size = windowSize
         })
         Tween:Run(self._shadowFrame, tweenInfo, {
             Size = UDim2.new(0, windowSize.X.Offset + 20, 0, windowSize.Y.Offset + 20)
@@ -1154,11 +1152,9 @@ Modules["Window"] = function()
         if visible then
             self._mainFrame.Visible = true
             self._shadowFrame.Visible = true
-            Tween:Run(self._mainFrame, tweenInfo, {GroupTransparency = 0})
             Tween:Run(self._shadowFrame, tweenInfo, {ImageTransparency = 0.5})
         else
-            local t = Tween:Run(self._mainFrame, tweenInfo, {GroupTransparency = 1})
-            Tween:Run(self._shadowFrame, tweenInfo, {ImageTransparency = 1})
+            local t = Tween:Run(self._shadowFrame, tweenInfo, {ImageTransparency = 1})
             
             self._maid:GiveTask(t.Completed:Connect(function()
                 if not self._visible then
@@ -1175,7 +1171,7 @@ Modules["Window"] = function()
 
     function Window:Destroy()
         local tweenInfo = Tween:GetInfo(Config:Get("AnimationSpeed"), Config:Get("AnimationEasing"), Config:Get("AnimationDirection"))
-        local t = Tween:Run(self._mainFrame, tweenInfo, {GroupTransparency = 1, Size = UDim2.new(0, 0, 0, 0)})
+        local t = Tween:Run(self._mainFrame, tweenInfo, {Size = UDim2.new(0, 0, 0, 0)})
         Tween:Run(self._shadowFrame, tweenInfo, {ImageTransparency = 1, Size = UDim2.new(0, 0, 0, 0)})
         
         self._maid:GiveTask(t.Completed:Connect(function()
