@@ -334,20 +334,20 @@ Modules["Theme"] = function()
     
     Theme._themes = {
         Dark = {
-            Background = Color3.fromRGB(27, 27, 30),
-            SecondaryBackground = Color3.fromRGB(34, 34, 38),
-            Topbar = Color3.fromRGB(22, 22, 24),
-            Border = Color3.fromRGB(70, 70, 75),
-            Accent = Color3.fromRGB(0, 170, 255),
-            Hover = Color3.fromRGB(45, 45, 50),
+            Background = Color3.fromRGB(12, 12, 12),
+            SecondaryBackground = Color3.fromRGB(20, 20, 22),
+            Topbar = Color3.fromRGB(10, 10, 10),
+            Border = Color3.fromRGB(30, 30, 30),
+            Accent = Color3.fromRGB(80, 210, 255),
+            Hover = Color3.fromRGB(25, 25, 28),
             Success = Color3.fromRGB(70, 200, 120),
             Warning = Color3.fromRGB(255, 185, 50),
             Error = Color3.fromRGB(255, 75, 75),
-            Text = Color3.fromRGB(255, 255, 255),
-            SubText = Color3.fromRGB(180, 180, 180),
+            Text = Color3.fromRGB(240, 240, 240),
+            SubText = Color3.fromRGB(150, 150, 150),
             Shadow = Color3.fromRGB(0, 0, 0),
-            Input = Color3.fromRGB(40, 40, 44),
-            Divider = Color3.fromRGB(55, 55, 60),
+            Input = Color3.fromRGB(25, 25, 28),
+            Divider = Color3.fromRGB(35, 35, 38),
             Overlay = Color3.fromRGB(0, 0, 0)
         },
         Light = {
@@ -987,6 +987,22 @@ Modules["Window"] = function()
             })
         end
 
+        self._tabContainer = Create.new("Frame", {
+            Name = "TabContainer",
+            Parent = self._topBar,
+            Size = UDim2.new(0.5, 0, 1, 0),
+            Position = UDim2.new(0.5, 0, 0, 0),
+            BackgroundTransparency = 1,
+        }, {
+            Create.new("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 10)
+            }),
+            Create.new("UIPadding", { PaddingRight = UDim.new(0, 40) })
+        })
+
         self._bodyFrame = Create.new("Frame", {
             Name = "Body",
             Parent = self._mainFrame,
@@ -995,39 +1011,11 @@ Modules["Window"] = function()
             BackgroundTransparency = 1
         })
         
-        self._sidebar = Create.new("Frame", {
-            Name = "Sidebar",
-            Parent = self._bodyFrame,
-            Size = UDim2.new(0, Config:Get("TabWidth"), 1, 0),
-            BackgroundColor3 = Theme:GetColor("SecondaryBackground"),
-            BorderSizePixel = 0
-        }, {
-            Create.new("UIListLayout", {
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 2)
-            }),
-            Create.new("UIPadding", {
-                PaddingTop = UDim.new(0, 4),
-                PaddingBottom = UDim.new(0, 4),
-                PaddingLeft = UDim.new(0, 4),
-                PaddingRight = UDim.new(0, 4)
-            })
-        })
-        
-        self._divider = Create.new("Frame", {
-            Name = "Divider",
-            Parent = self._bodyFrame,
-            Size = UDim2.new(0, 1, 1, 0),
-            Position = UDim2.new(0, Config:Get("TabWidth"), 0, 0),
-            BackgroundColor3 = Theme:GetColor("Divider"),
-            BorderSizePixel = 0
-        })
-        
         self._contentContainer = Create.new("Frame", {
             Name = "Content",
             Parent = self._bodyFrame,
-            Size = UDim2.new(1, -Config:Get("TabWidth") - 1, 1, 0),
-            Position = UDim2.new(0, Config:Get("TabWidth") + 1, 0, 0),
+            Size = UDim2.new(1, 0, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
             BackgroundTransparency = 1
         }, {
             Create.new("UIPadding", {
@@ -1088,8 +1076,6 @@ Modules["Window"] = function()
             self._topBar.BottomLine.BackgroundColor3 = Theme:GetColor("Border")
             self._titleLabel.TextColor3 = Theme:GetColor("Text")
             self._closeButton.ImageColor3 = Theme:GetColor("SubText")
-            self._sidebar.BackgroundColor3 = Theme:GetColor("SecondaryBackground")
-            self._divider.BackgroundColor3 = Theme:GetColor("Divider")
             
             if self._minimizeButton then
                 self._minimizeButton.ImageColor3 = Theme:GetColor("SubText")
@@ -1227,8 +1213,9 @@ Modules["Tab"] = function()
     function Tab:_build()
         self._button = Create.new("TextButton", {
             Name = self._name,
-            Parent = self._window._sidebar,
-            Size = UDim2.new(1, 0, 0, 36),
+            Parent = self._window._tabContainer,
+            Size = UDim2.new(0, 0, 1, 0),
+            AutomaticSize = Enum.AutomaticSize.X,
             BackgroundColor3 = Theme:GetColor("SecondaryBackground"),
             BackgroundTransparency = 1,
             AutoButtonColor = false,
@@ -1241,9 +1228,9 @@ Modules["Tab"] = function()
         self._indicator = Create.new("Frame", {
             Name = "Indicator",
             Parent = self._button,
-            Size = UDim2.new(0, 3, 0, 20),
-            Position = UDim2.new(0, 0, 0.5, 0),
-            AnchorPoint = Vector2.new(0, 0.5),
+            Size = UDim2.new(1, 0, 0, 2),
+            Position = UDim2.new(0, 0, 1, -2),
+            AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = Theme:GetColor("Accent"),
             BackgroundTransparency = 1,
             BorderSizePixel = 0,
@@ -1291,16 +1278,32 @@ Modules["Tab"] = function()
             CanvasSize = UDim2.new(0, 0, 0, 0),
             Visible = false
         }, {
-            Create.new("UIListLayout", {
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, Config:Get("Padding"))
-            }),
             Create.new("UIPadding", {
                 PaddingTop = UDim.new(0, 0),
                 PaddingBottom = UDim.new(0, 0),
                 PaddingLeft = UDim.new(0, 0),
                 PaddingRight = UDim.new(0, 10)
             })
+        })
+        
+        self._leftColumn = Create.new("Frame", {
+            Name = "LeftColumn",
+            Parent = self._content,
+            Size = UDim2.new(0.5, -4, 1, 0),
+            BackgroundTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.Y
+        }, {
+            Create.new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8) })
+        })
+        self._rightColumn = Create.new("Frame", {
+            Name = "RightColumn",
+            Parent = self._content,
+            Size = UDim2.new(0.5, -4, 1, 0),
+            Position = UDim2.new(0.5, 4, 0, 0),
+            BackgroundTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.Y
+        }, {
+            Create.new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8) })
         })
         
         self._window:_registerSearchable(self._name, self._button)
@@ -1409,10 +1412,17 @@ Modules["Section"] = function()
     function Section:_build()
         self._frame = Create.new("Frame", {
             Name = "Section_" .. self._name,
-            Parent = self._tab._content,
+            Parent = self._tab._leftColumn,
             Size = UDim2.new(1, 0, 0, 0),
-            BackgroundTransparency = 1,
+            BackgroundTransparency = 0,
+            BackgroundColor3 = Theme:GetColor("SecondaryBackground"),
             AutomaticSize = Enum.AutomaticSize.Y,
+        }, {
+            Create.new("UICorner", { CornerRadius = UDim.new(0, 6) }),
+            Create.new("UIStroke", {
+                Color = Theme:GetColor("Border"),
+                Thickness = 1
+            })
         })
         
         self._header = Create.new("Frame", {
@@ -1701,6 +1711,7 @@ Modules["Toggle"] = function()
     local Maid = loadModule("Maid")
     local Signal = loadModule("Signal")
     local Save = loadModule("Save")
+    local Icons = loadModule("Icons")
     
     local Toggle = {}
     Toggle.__index = Toggle
@@ -1769,25 +1780,31 @@ Modules["Toggle"] = function()
         self._toggleFrame = Create.new("Frame", {
             Name = "ToggleFrame",
             Parent = self._frame,
-            Size = UDim2.new(0, 40, 0, 22),
+            Size = UDim2.new(0, 16, 0, 16),
             AnchorPoint = Vector2.new(1, 0.5),
             Position = UDim2.new(1, -Config:Get("Padding"), 0.5, 0),
-            BackgroundColor3 = Theme:GetColor("Border"),
+            BackgroundColor3 = self._value and Theme:GetColor("Accent") or Theme:GetColor("SecondaryBackground"),
+            BackgroundTransparency = self._value and 0 or 1,
             BorderSizePixel = 0,
         }, {
-            Create.new("UICorner", { CornerRadius = UDim.new(0, 11) })
+            Create.new("UICorner", { CornerRadius = UDim.new(0, 4) }),
+            Create.new("UIStroke", {
+                Name = "Stroke",
+                Color = Theme:GetColor("Border"),
+                Thickness = 1
+            })
         })
         
-        self._toggleCircle = Create.new("Frame", {
-            Name = "ToggleCircle",
+        self._toggleCheck = Create.new("ImageLabel", {
+            Name = "Check",
             Parent = self._toggleFrame,
-            Size = UDim2.new(0, 18, 0, 18),
-            Position = UDim2.new(0, 2, 0.5, 0),
-            AnchorPoint = Vector2.new(0, 0.5),
-            BackgroundColor3 = Color3.new(1, 1, 1),
-            BorderSizePixel = 0,
-        }, {
-            Create.new("UICorner", { CornerRadius = UDim.new(0, 9) })
+            Size = UDim2.new(1, -4, 1, -4),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            Image = Icons.Check,
+            ImageColor3 = Color3.new(1, 1, 1),
+            Visible = self._value
         })
         
         self._maid:GiveTask(self._frame.MouseEnter:Connect(function()
@@ -1808,7 +1825,8 @@ Modules["Toggle"] = function()
             self._frame.BackgroundColor3 = Theme:GetColor("SecondaryBackground")
             self._nameLabel.TextColor3 = Theme:GetColor("Text")
             if self._descLabel then self._descLabel.TextColor3 = Theme:GetColor("SubText") end
-            self._toggleFrame.BackgroundColor3 = self._value and Theme:GetColor("Accent") or Theme:GetColor("Border")
+            self._toggleFrame.BackgroundColor3 = self._value and Theme:GetColor("Accent") or Theme:GetColor("SecondaryBackground")
+            self._toggleFrame.Stroke.Color = Theme:GetColor("Border")
         end))
     end
     
@@ -1816,12 +1834,11 @@ Modules["Toggle"] = function()
         self._value = value
         
         Tween:Run(self._toggleFrame, Tween:GetInfo(0.2), {
-            BackgroundColor3 = value and Theme:GetColor("Accent") or Theme:GetColor("Border")
+            BackgroundColor3 = value and Theme:GetColor("Accent") or Theme:GetColor("SecondaryBackground"),
+            BackgroundTransparency = value and 0 or 1
         })
         
-        Tween:Run(self._toggleCircle, Tween:GetInfo(0.2), {
-            Position = value and UDim2.new(1, -20, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
-        })
+        self._toggleCheck.Visible = value
         
         if self._config.Flag then
             Save:Set(self._config.Flag, value)
